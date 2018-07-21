@@ -9,6 +9,7 @@ USING_NS_CC;
 
 Bunny::Bunny() {
   _root = Sprite::create();
+  _root->setScale(SCALE);
 
   auto bodyFrame = SpriteFrame::create("bunnypuca_X.png", Rect(0, 0, 124, 120));
   _body = Sprite::createWithSpriteFrame(bodyFrame);

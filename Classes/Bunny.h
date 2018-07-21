@@ -12,6 +12,8 @@ class Bunny {
   cocos2d::Sprite *_root;
   cocos2d::Sprite *_body;
   cocos2d::Sprite *_gun;
+
+  const float SCALE = 1;
  public:
   Bunny();
   Bunny(float x, float y, cocos2d::Node *targetNode, int targetLayer);
