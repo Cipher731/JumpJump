@@ -14,11 +14,11 @@ class Bullet {
   const float SPEED = 20;
  public:
   Bullet();
-  Bullet(float x, float y, cocos2d::Scene *targetScene, int targetLayer);
+  Bullet(float x, float y, cocos2d::Node *targetNode, int targetLayer);
   ~Bullet() = default;
-
-  void moveTowards(float x, float y);
   cocos2d::Sprite *getSprite();
+
+  void moveTowards(const cocos2d::Vec2 &target);
 };
 
 #endif //JUMPJUMP_BULLET_H

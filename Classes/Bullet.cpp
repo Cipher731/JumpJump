@@ -38,14 +38,14 @@ Bullet::Bullet() {
   _sprite->runAction(RepeatForever::create(animate));
 }
 
-Bullet::Bullet(float x, float y, Scene *targetScene, int targetLayer) : Bullet() {
+Bullet::Bullet(float x, float y, Node *targetNode, int targetLayer) : Bullet() {
   _sprite->setPosition(x, y);
-  targetScene->addChild(_sprite, targetLayer);
+  targetNode->addChild(_sprite, targetLayer);
 }
 
-void Bullet::moveTowards(float x, float y) {
-  auto dir = Vec2(x, y) - _sprite->getPosition();
-  auto rotation = CC_RADIANS_TO_DEGREES(dir.getAngle());
+void Bullet::moveTowards(const Vec2 &target) {
+  auto dir = target - _sprite->getPosition();
+  auto rotation = 90 - CC_RADIANS_TO_DEGREES(dir.getAngle());
   _sprite->setRotation(rotation);
   _sprite->runAction(RepeatForever::create(MoveBy::create(0.1, SPEED * dir.getNormalized())));
 }
