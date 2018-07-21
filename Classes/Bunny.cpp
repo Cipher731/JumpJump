@@ -4,8 +4,10 @@
 
 #include "Bunny.h"
 #include "Bullet.h"
+#include "MyUtil.h"
 
 USING_NS_CC;
+using namespace myutil;
 
 Bunny::Bunny() {
   _root = Sprite::create();
@@ -15,9 +17,29 @@ Bunny::Bunny() {
   _body = Sprite::createWithSpriteFrame(bodyFrame);
   _root->addChild(_body);
 
-  auto gunFrame = SpriteFrame::create("liknjuska_X.png", Rect(0, 0, 28, 120));
+  auto gunFrame = SpriteFrame::create("liknjuska_X.png", Rect(0, 0, 28, 116));
   _gun = Sprite::createWithSpriteFrame(gunFrame);
+  _gun->setPosition(-2, 0);
   _root->addChild(_gun);
+
+  auto frameContainer = Vector<SpriteFrame *>(4);
+  auto texture = Director::getInstance()->getTextureCache()->addImage("propellerbunny_X.png");
+  _booster = Sprite::createWithTexture(texture, Rect(0, 0, 64, 64));
+  _booster->setPosition(0, 36);
+  _booster->setVisible(false);
+  _root->addChild(_booster);
+
+  for (int i = 0; i < 2; i++) {
+    for (int j = 0; j < 2; j++) {
+      auto frame = SpriteFrame::createWithTexture(
+          texture,
+          CC_RECT_PIXELS_TO_POINTS(Rect(64 * j, 64 * i, 64, 64))
+      );
+      frameContainer.pushBack(frame);
+    }
+  }
+  cacheAnimation(frameContainer, "booster", 0.1);
+  _booster->runAction(RepeatForever::create(getCachedAnimateByName("booster")));
 }
 
 Bunny::Bunny(float x, float y, Node *targetNode, int targetLayer) : Bunny() {
@@ -37,4 +59,19 @@ void Bunny::lookAt(cocos2d::Vec2 target) {
   auto dir = target - _root->getPosition();
   auto rotation = 90 - CC_RADIANS_TO_DEGREES(dir.getAngle());
   _gun->setRotation(rotation);
+}
+
+void Bunny::boost() {
+  _gun->setVisible(false);
+  _booster->setVisible(true);
+  _root->runAction(
+      Sequence::create(
+          DelayTime::create(2),
+          CallFunc::create([this]() {
+            _gun->setVisible(true);
+            _booster->setVisible(false);
+          }),
+          nullptr
+      )
+  );
 }

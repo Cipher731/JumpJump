@@ -47,9 +47,10 @@ bool HelloWorld::init() {
   auto visibleSize = Director::getInstance()->getVisibleSize();
   Vec2 origin = Director::getInstance()->getVisibleOrigin();
 
-  auto character = Bunny(0, 0, this, 0);
-  character.lookAt(Vec2(480, 320));
-  character.shootAt(Vec2(480, 320));
+  _character = new Bunny(240, 160, this, 0);
+//  character->lookAt(Vec2(480, 320));
+//  character->shootAt(Vec2(480, 320));
+//  character->boost();
   return true;
 }
 

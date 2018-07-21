@@ -12,6 +12,7 @@ class Bunny {
   cocos2d::Sprite *_root;
   cocos2d::Sprite *_body;
   cocos2d::Sprite *_gun;
+  cocos2d::Sprite *_booster;
 
   const float SCALE = 1;
  public:
@@ -22,6 +23,7 @@ class Bunny {
 
   void shootAt(cocos2d::Vec2 target);
   void lookAt(cocos2d::Vec2 target);
+  void boost();
 };
 
 #endif //JUMPJUMP_BUNNY_H

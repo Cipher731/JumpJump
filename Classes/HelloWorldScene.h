@@ -31,6 +31,8 @@
 #include "Bunny.h"
 
 class HelloWorld : public cocos2d::Scene {
+ private:
+  Bunny *_character;
  public:
   static cocos2d::Scene *createScene();
 
