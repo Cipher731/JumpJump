@@ -26,20 +26,43 @@
 #define __HELLOWORLD_SCENE_H__
 
 #include "cocos2d.h"
+using namespace std;
 
 #include "Bullet.h"
 #include "Bunny.h"
+#include "platform.h"
+using namespace std;
+USING_NS_CC;
 
-class HelloWorld : public cocos2d::Scene {
+class HelloWorld : public Scene {
  private:
   Bunny *_character;
+  list<Sprite*> thing;
+
  public:
-  static cocos2d::Scene *createScene();
+
+	 static cocos2d::Scene *createScene();
 
   virtual bool init();
 
   // a selector callback
+  Size visibleSize;
   void menuCloseCallback(cocos2d::Ref *pSender);
+  void onKeyPressed(EventKeyboard::KeyCode code, Event* event);
+  void onKeyReleased(EventKeyboard::KeyCode code, Event* event);
+  void generate_platform(int y);
+  void generate_platform(int x,int y);
+  void update(float);
+  void addKeyboardListener();
+  void moveCharacter(char c);
+
+  bool isMove;
+  bool isClick;
+  char movekey;
+  
+  float vertical_speed;
+  bool up_or_down;
+  float remain;
 
   // implement the "static create()" method manually
   CREATE_FUNC(HelloWorld);

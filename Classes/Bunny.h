@@ -13,8 +13,10 @@ class Bunny {
   cocos2d::Sprite *_body;
   cocos2d::Sprite *_gun;
   cocos2d::Sprite *_booster;
+  cocos2d::Sprite *_normal_left;
+  cocos2d::Sprite *_normal_right;
 
-  const float SCALE = 1;
+  const float SCALE = 0.6f;
  public:
   Bunny();
   Bunny(float x, float y, cocos2d::Node *targetNode, int targetLayer);
@@ -24,6 +26,8 @@ class Bunny {
   void shootAt(cocos2d::Vec2 target);
   void lookAt(cocos2d::Vec2 target);
   void boost();
+  void setLeft();
+  void setRight();
 };
 
 #endif //JUMPJUMP_BUNNY_H

@@ -15,11 +15,13 @@ Bunny::Bunny() {
 
   auto bodyFrame = SpriteFrame::create("bunnypuca_X.png", Rect(0, 0, 124, 120));
   _body = Sprite::createWithSpriteFrame(bodyFrame);
+  _body->setVisible(false);
   _root->addChild(_body);
 
   auto gunFrame = SpriteFrame::create("liknjuska_X.png", Rect(0, 0, 28, 116));
   _gun = Sprite::createWithSpriteFrame(gunFrame);
   _gun->setPosition(-2, 0);
+  _gun->setVisible(false);
   _root->addChild(_gun);
 
   auto frameContainer = Vector<SpriteFrame *>(4);
@@ -28,6 +30,16 @@ Bunny::Bunny() {
   _booster->setPosition(0, 36);
   _booster->setVisible(false);
   _root->addChild(_booster);
+
+  auto leftFrame = SpriteFrame::create("bunnyleft_X.png", Rect(0, 0, 124, 120));
+  _normal_left = Sprite::createWithSpriteFrame(leftFrame);
+  _root->addChild(_normal_left);
+
+  auto rightFrame = SpriteFrame::create("bunnyright_X.png", Rect(0, 0, 124, 120));
+  _normal_right = Sprite::createWithSpriteFrame(rightFrame);
+  _normal_right->setVisible(false);
+  _root->addChild(_normal_right);
+
 
   for (int i = 0; i < 2; i++) {
     for (int j = 0; j < 2; j++) {
@@ -38,7 +50,7 @@ Bunny::Bunny() {
       frameContainer.pushBack(frame);
     }
   }
-  cacheAnimation(frameContainer, "booster", 0.1);
+  cacheAnimation(frameContainer, "booster", 0.1f);
   _booster->runAction(RepeatForever::create(getCachedAnimateByName("booster")));
 }
 
@@ -61,6 +73,20 @@ void Bunny::lookAt(cocos2d::Vec2 target) {
   _gun->setRotation(rotation);
 }
 
+void Bunny::setLeft() {
+	_body->setVisible(false);
+	_gun->setVisible(false);
+	_normal_right->setVisible(false);
+	_normal_left->setVisible(true);
+}
+
+void Bunny::setRight() {
+	_body->setVisible(false);
+	_gun->setVisible(false);
+	_normal_right->setVisible(true);
+	_normal_left->setVisible(false);
+}
+
 void Bunny::boost() {
   _gun->setVisible(false);
   _booster->setVisible(true);
@@ -75,3 +101,4 @@ void Bunny::boost() {
       )
   );
 }
+
