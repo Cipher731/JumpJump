@@ -14,6 +14,8 @@ public:
 	cocos2d::Sprite * _root;
 	platform(int type,int x,int y, cocos2d::Node *);
 	~platform();
+	int type;
+	int direction;
 };
 
 

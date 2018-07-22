@@ -37,6 +37,7 @@ class HelloWorld : public Scene {
  private:
   Bunny *_character;
   list<Sprite*> thing;
+  list<platform*> plats;
 
  public:
 

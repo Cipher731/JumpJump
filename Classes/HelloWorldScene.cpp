@@ -119,6 +119,36 @@ void HelloWorld::update(float f) {
       }
     }
   }
+  
+  for (auto it = thing.begin(); it != thing.end(); it++) {
+	  if ((*it)->getPositionY() < -20) {
+		  this->removeChild(*it);
+		  for (auto &t : plats) {
+			  if (t->_root == (*it)) {
+				  plats.remove(t);
+				  break;
+			  }
+		  }
+		  it = thing.erase(it);
+	  }
+  }
+
+  for (auto &it : plats) {
+	  if (it->type == 1) {
+		  auto pos = it->_root->getPosition();
+		  if (it->direction == 0) {
+			  pos.x -= 4;
+		  }
+		  else {
+			  pos.x += 4;
+		  }
+		  it->_root->setPosition(pos);
+		  if (pos.x < 20)
+			  it->direction = 1;
+		  else if (pos.x > visibleSize.width - 20)
+			  it->direction = 0;
+	  }
+  }
 
   if (pos.y < 0) {
     unscheduleAllCallbacks();
@@ -187,7 +217,8 @@ void HelloWorld::generate_platform(int y) {
 }
 
 void HelloWorld::generate_platform(int x, int y) {
-  auto t = new platform(0, x, y, this);
+	auto t = new platform(cocos2d::RandomHelper::random_int(0, 100) > 20 ? 0 : 1, x, y, this);
+  plats.push_back(t);
   thing.push_back(t->_root);
 }
 
