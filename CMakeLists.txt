@@ -61,6 +61,9 @@ list(APPEND GAME_SOURCE
         Classes/Bunny.cpp
         Classes/Bullet.cpp
         Classes/MyUtil.cpp
+        Classes/platform.cpp
+        Classes/StartScene.cpp
+        Classes/GameOverScene.cpp
         )
 list(APPEND GAME_HEADER
         Classes/AppDelegate.h
@@ -68,6 +71,9 @@ list(APPEND GAME_HEADER
         Classes/Bunny.h
         Classes/Bullet.h
         Classes/MyUtil.h
+        Classes/platform.h
+        Classes/StartScene.h
+        Classes/GameOverScene.h
         )
 
 if (ANDROID)

@@ -26,11 +26,10 @@
 #define __HELLOWORLD_SCENE_H__
 
 #include "cocos2d.h"
-using namespace std;
-
 #include "Bullet.h"
 #include "Bunny.h"
 #include "platform.h"
+
 using namespace std;
 USING_NS_CC;
 

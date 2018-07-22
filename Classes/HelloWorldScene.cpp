@@ -24,13 +24,14 @@
 
 #include "HelloWorldScene.h"
 #include "SimpleAudioEngine.h"
+#include "GameOverScene.h"
 
 USING_NS_CC;
 
 using namespace CocosDenshion;
 
 Scene *HelloWorld::createScene() {
-	return HelloWorld::create();
+  return HelloWorld::create();
 }
 
 // Print useful error message instead of segfaulting when files are not there.
@@ -58,11 +59,11 @@ bool HelloWorld::init() {
   auto visibleSize = Director::getInstance()->getVisibleSize();
   Vec2 origin = Director::getInstance()->getVisibleOrigin();
 
-  _character = new Bunny(visibleSize.width/2, 160, this, 3);
+  _character = new Bunny(visibleSize.width / 2, 160, this, 3);
   _character->setLeft();
 
   for (int i = 200; i < visibleSize.height; i += 80) {
-	  generate_platform(i);
+    generate_platform(i);
   }
   generate_platform(visibleSize.width / 2, 100);
   remain = 80;
@@ -75,119 +76,119 @@ bool HelloWorld::init() {
   return true;
 }
 
-
 void HelloWorld::update(float f) {
-	if (isMove) {
-		moveCharacter(movekey);
-	}
-	auto pos = _character->getSprite()->getPosition();
-	if (up_or_down) {
-		if(pos.y<visibleSize.height/2)
-			pos.y += vertical_speed * 0.1;
-		else {
-			for (auto it = thing.begin(); it != thing.end(); it++) {
-				auto t = (*it)->getPosition();
-				t.y -= vertical_speed * 0.1;
-				(*it)->setPosition(t);
-			}
-			remain -= vertical_speed * 0.1;
-			if (remain < 0) {
-				remain = 80;
-				generate_platform(visibleSize.height - 20);
-			}
-		}
-		vertical_speed -= 2;
-	}
-	else {
-		pos.y -= vertical_speed * 0.1;
-		vertical_speed += 2;
-	}
+  if (isMove) {
+    moveCharacter(movekey);
+  }
+  auto pos = _character->getSprite()->getPosition();
+  if (up_or_down) {
+    if (pos.y < visibleSize.height / 2)
+      pos.y += vertical_speed * 0.1;
+    else {
+      for (auto &it : thing) {
+        auto t = it->getPosition();
+        t.y -= vertical_speed * 0.1;
+        it->setPosition(t);
+      }
+      remain -= vertical_speed * 0.1;
+      if (remain < 0) {
+        remain = 80;
+        generate_platform(visibleSize.height - 20);
+      }
+    }
+    vertical_speed -= 2;
+  } else {
+    pos.y -= vertical_speed * 0.1;
+    vertical_speed += 2;
+  }
 
-	if (up_or_down && vertical_speed <= 0) {
-		up_or_down = false;
-		vertical_speed = 0;
-	}
+  if (up_or_down && vertical_speed <= 0) {
+    up_or_down = false;
+    vertical_speed = 0;
+  }
 
-	_character->getSprite()->setPosition(pos);
-	if (!up_or_down)
-	{
-		for (auto it = thing.begin(); it != thing.end(); it++) {
-			if (pos.x > (*it)->getPositionX() - 50
-				&& pos.x< (*it)->getPositionX() + 50
-				&& pos.y>(*it)->getPositionY()+40
-				&& pos.y - (*it)->getPositionY() < (40+vertical_speed*0.1)) {
-				up_or_down = true;
-				vertical_speed = 100;
-			}
-		}
-	}
+  _character->getSprite()->setPosition(pos);
+  if (!up_or_down) {
+    for (auto &it : thing) {
+      if (pos.x > it->getPositionX() - 50
+          && pos.x < it->getPositionX() + 50
+          && pos.y > it->getPositionY() + 40
+          && pos.y - it->getPositionY() < (40 + vertical_speed * 0.1)) {
+        up_or_down = true;
+        vertical_speed = 100;
+      }
+    }
+  }
+
+  if (pos.y < 0) {
+    unscheduleAllCallbacks();
+    Director::getInstance()->replaceScene(TransitionFade::create(0.5, GameOverScene::createScene()));
+  }
 }
 
-
 void HelloWorld::moveCharacter(char c) {
-	auto pos = _character->getSprite()->getPosition();
-	if (c == 'A') {
-		if (pos.x > 0)
-			pos.x -= 8;
-		else
-			pos.x = visibleSize.width;
-		_character->setLeft();
-	}
-	else {
-		if (pos.x < visibleSize.width)
-			pos.x += 8;
-		else
-			pos.x = 0;
-		_character->setRight();
-	}
-	_character->getSprite()->setPosition(pos);
+  auto pos = _character->getSprite()->getPosition();
+  if (c == 'A') {
+    if (pos.x > 0)
+      pos.x -= 8;
+    else
+      pos.x = visibleSize.width;
+    _character->setLeft();
+  } else {
+    if (pos.x < visibleSize.width)
+      pos.x += 8;
+    else
+      pos.x = 0;
+    _character->setRight();
+  }
+  _character->getSprite()->setPosition(pos);
 }
 
 void HelloWorld::addKeyboardListener() {
-	auto keyboardListener = EventListenerKeyboard::create();
-	keyboardListener->onKeyPressed = CC_CALLBACK_2(HelloWorld::onKeyPressed, this);
-	keyboardListener->onKeyReleased = CC_CALLBACK_2(HelloWorld::onKeyReleased, this);
-	_eventDispatcher->addEventListenerWithFixedPriority(keyboardListener, 1);
+  auto keyboardListener = EventListenerKeyboard::create();
+  keyboardListener->onKeyPressed = CC_CALLBACK_2(HelloWorld::onKeyPressed, this);
+  keyboardListener->onKeyReleased = CC_CALLBACK_2(HelloWorld::onKeyReleased, this);
+  _eventDispatcher->addEventListenerWithFixedPriority(keyboardListener, 1);
 }
 
-void HelloWorld::onKeyPressed(EventKeyboard::KeyCode code, Event* event) {
-	switch (code) {
-	case EventKeyboard::KeyCode::KEY_LEFT_ARROW:
-	case EventKeyboard::KeyCode::KEY_CAPITAL_A:
-	case EventKeyboard::KeyCode::KEY_A:
-		movekey = 'A';
-		isMove = true;
-		break;
-	case EventKeyboard::KeyCode::KEY_RIGHT_ARROW:
-	case EventKeyboard::KeyCode::KEY_CAPITAL_D:
-	case EventKeyboard::KeyCode::KEY_D:
-		movekey = 'D';
-		isMove = true;
-		break;
-	}
+void HelloWorld::onKeyPressed(EventKeyboard::KeyCode code, Event *event) {
+  switch (code) {
+    case EventKeyboard::KeyCode::KEY_LEFT_ARROW:
+    case EventKeyboard::KeyCode::KEY_CAPITAL_A:
+    case EventKeyboard::KeyCode::KEY_A:
+      movekey = 'A';
+      isMove = true;
+      break;
+    case EventKeyboard::KeyCode::KEY_RIGHT_ARROW:
+    case EventKeyboard::KeyCode::KEY_CAPITAL_D:
+    case EventKeyboard::KeyCode::KEY_D:
+      movekey = 'D';
+      isMove = true;
+      break;
+  }
 }
 
-void HelloWorld::onKeyReleased(EventKeyboard::KeyCode code, Event* event) {
-	switch (code) {
-	case EventKeyboard::KeyCode::KEY_LEFT_ARROW:
-	case EventKeyboard::KeyCode::KEY_A:
-	case EventKeyboard::KeyCode::KEY_CAPITAL_A:
-	case EventKeyboard::KeyCode::KEY_RIGHT_ARROW:
-	case EventKeyboard::KeyCode::KEY_D:
-	case EventKeyboard::KeyCode::KEY_CAPITAL_D:
-		isMove = false;
-		break;
-	}
+void HelloWorld::onKeyReleased(EventKeyboard::KeyCode code, Event *event) {
+  switch (code) {
+    case EventKeyboard::KeyCode::KEY_LEFT_ARROW:
+    case EventKeyboard::KeyCode::KEY_A:
+    case EventKeyboard::KeyCode::KEY_CAPITAL_A:
+    case EventKeyboard::KeyCode::KEY_RIGHT_ARROW:
+    case EventKeyboard::KeyCode::KEY_D:
+    case EventKeyboard::KeyCode::KEY_CAPITAL_D:
+      isMove = false;
+      break;
+  }
 }
 
 void HelloWorld::generate_platform(int y) {
-	int x = cocos2d::RandomHelper::random_int(20, (int)visibleSize.width - 60);
-	generate_platform(x, y);
+  int x = cocos2d::RandomHelper::random_int(20, (int) visibleSize.width - 60);
+  generate_platform(x, y);
 }
 
-void HelloWorld::generate_platform(int x,int y) {
-	auto t = new platform(0, x, y, this);
-	thing.push_back(t->_root);
+void HelloWorld::generate_platform(int x, int y) {
+  auto t = new platform(0, x, y, this);
+  thing.push_back(t->_root);
 }
 
 void HelloWorld::menuCloseCallback(Ref *pSender) {
