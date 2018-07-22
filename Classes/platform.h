@@ -16,6 +16,7 @@ public:
 	~platform();
 	int type;
 	int direction;
+	int remain;
 };
 
 

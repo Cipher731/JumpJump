@@ -73,6 +73,14 @@ bool HelloWorld::init() {
   schedule(schedule_selector(HelloWorld::update), 0.02f, kRepeatForever, 0);
   up_or_down = true;
   vertical_speed = 100;
+
+  auto texture = Director::getInstance()->getTextureCache()->addImage("gametilesbunny_X.png");
+  auto disapper = new Vector<SpriteFrame*>;
+  for (int i = 0; i < 3; i++) {
+	  auto frame = SpriteFrame::createWithTexture(texture, CC_RECT_PIXELS_TO_POINTS(Rect(0,38*5+38*i, 130, 32)));
+	  disapper->pushBack(frame);
+  }
+  cacheAnimation(*disapper, "disapper", 0.1);
   return true;
 }
 
@@ -108,6 +116,7 @@ void HelloWorld::update(float f) {
   }
 
   _character->getSprite()->setPosition(pos);
+  Sprite* flag=NULL;
   if (!up_or_down) {
     for (auto &it : thing) {
       if (pos.x > it->getPositionX() - 50
@@ -115,9 +124,33 @@ void HelloWorld::update(float f) {
           && pos.y > it->getPositionY() + 40
           && pos.y - it->getPositionY() < (40 + vertical_speed * 0.1)) {
         up_or_down = true;
+		int tmp_speed = vertical_speed;
         vertical_speed = 100;
+		for (auto &i : plats) {
+			if (i->type == 2 && i->_root==it) {
+				if (i->remain == 2) {
+					i->_root->removeAllChildren();
+					auto tmp = SpriteFrame::create("gametilesbunny_X.png", Rect(0, 180, 130, 36));
+					i->_root->addChild(Sprite::createWithSpriteFrame(tmp));
+					i->remain = 1;
+				}
+				else if (i->remain == 1) {
+					up_or_down = false;
+					vertical_speed = tmp_speed;
+					flag = it;
+					i->_root->removeAllChildren();
+					i->_root->runAction(Sequence::create(getCachedAnimateByName("disapper"), RemoveSelf::create(),NULL));
+					plats.remove(i);
+				}
+				break;
+			}
+		}
       }
     }
+  }
+  if (flag != NULL)
+  {
+	  thing.remove(flag);
   }
   
   for (auto it = thing.begin(); it != thing.end(); it++) {
@@ -217,7 +250,14 @@ void HelloWorld::generate_platform(int y) {
 }
 
 void HelloWorld::generate_platform(int x, int y) {
-	auto t = new platform(cocos2d::RandomHelper::random_int(0, 100) > 20 ? 0 : 1, x, y, this);
+	int type = cocos2d::RandomHelper::random_int(0, 100);
+	if (type > 30)
+		type = 0;
+	else if (type > 10)
+		type = 1;
+	else
+		type = 2;
+	auto t = new platform(type, x, y, this);
   plats.push_back(t);
   thing.push_back(t->_root);
 }

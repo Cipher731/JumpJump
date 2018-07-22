@@ -29,6 +29,9 @@
 #include "Bullet.h"
 #include "Bunny.h"
 #include "platform.h"
+#include "MyUtil.h"
+
+using namespace myutil;
 
 using namespace std;
 USING_NS_CC;
